@@ -9,10 +9,16 @@ import {
   SliderThumb,
   Box,
   Flex,
+  extendTheme,
+  HStack,
 } from "@chakra-ui/react";
 import { BellIcon } from "@chakra-ui/icons";
-
-function App() {
+const config = {
+  initialColorMode: "light",
+  useSystemColorMode: false,
+};
+export const theme = extendTheme({ config });
+export function App() {
   const audioSource =
     "https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3";
   // const [audioContext, setAudioContext] = useState(null);
@@ -27,32 +33,37 @@ function App() {
     track.connect(gainNode).connect(audioContext.destination);
     setGainNodeState(gainNode);
   }, []);
+
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <Flex
         h="100vh"
         alignItems="center"
         justifyContent="center"
         flexDir="column"
+        // bg="blue"
       >
         <audio
           ref={audioElementRef}
           src={audioSource}
           crossOrigin="anonymous"
-          style={{ border: "1px solid black" }}
         ></audio>
-        <Button onClick={() => audioElementRef.current.play()} style={styles}>
-          play
-        </Button>
-        <Button onClick={() => audioElementRef.current.pause()} style={styles}>
-          pause
-        </Button>
+        <HStack>
+          <Button onClick={() => audioElementRef.current.play()} style={styles}>
+            play
+          </Button>
+          <Button
+            onClick={() => audioElementRef.current.pause()}
+            style={styles}
+          >
+            pause
+          </Button>
+        </HStack>
         <Slider
           aria-label="slider-ex-4"
           defaultValue={1.5}
           onChange={(e) => {
             gainNodeState.gain.value = e;
-            // console.log(audioElementRef);
           }}
           min={0}
           max={3}
@@ -70,7 +81,6 @@ function App() {
   );
 }
 
-export default App;
 const styles = {
   width: "500px",
   height: "100px",
